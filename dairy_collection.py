@@ -2,7 +2,11 @@
 import hashlib
 import sqlite3
 
-SCHEMA = "CREATE TABLE milk (id INTEGER PRIMARY KEY, farmer TEXT, litres REAL, fat REAL, day TEXT)"
+SCHEMA = (
+    "CREATE TABLE milk ("
+    "id INTEGER PRIMARY KEY, farmer TEXT, "
+    "litres REAL, fat REAL, day TEXT)"
+)
 
 
 def create_connection():
@@ -26,13 +30,17 @@ def farmer_token(farmer):
 
 def daily_total(conn, day):
     """Return a formatted string with total litres collected on a day."""
-    rows = conn.execute("SELECT litres FROM milk WHERE day = ?", (day,)).fetchall()
+    rows = conn.execute(
+        "SELECT litres FROM milk WHERE day = ?", (day,)
+    ).fetchall()
     return f"Total: {sum(row[0] for row in rows):.1f} litres"
 
 
 def top_farmer(conn):
     """Return the farmer with the highest total litres, or None if empty."""
-    rows = conn.execute("SELECT farmer, SUM(litres) FROM milk GROUP BY farmer").fetchall()
+    rows = conn.execute(
+        "SELECT farmer, SUM(litres) FROM milk GROUP BY farmer"
+    ).fetchall()
     top = max(rows, key=lambda row: row[1], default=None)
     return top[0] if top else None
 
